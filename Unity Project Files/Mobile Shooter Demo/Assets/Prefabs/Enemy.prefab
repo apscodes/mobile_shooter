@@ -22,9 +22,10 @@ GameObject:
   - component: {fileID: 33175532638568014}
   - component: {fileID: 136210476861614204}
   - component: {fileID: 23141926304885738}
+  - component: {fileID: 114930395083368716}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -37,7 +38,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4336600044764024}
-  - component: {fileID: 114890584560349434}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -80,7 +80,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1364484313367186}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.3215566, y: -0.81046116, z: 0.68}
+  m_LocalPosition: {x: 3.4426773, y: -0.81046057, z: 3.4470382}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4673489933690814}
@@ -142,12 +142,12 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1222563185173030}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114890584560349434
+--- !u!114 &114930395083368716
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1364484313367186}
+  m_GameObject: {fileID: 1222563185173030}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51f379eeb300b1045b96747ca1cdf865, type: 3}
@@ -155,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   min_distance: 2
   movement_speed: 1
+  Bullet_Prefab: {fileID: 1365942181629118, guid: f1e2dff5c4de47e4ca8e2b50a8e4db96,
+    type: 2}
 --- !u!136 &136210476861614204
 CapsuleCollider:
   m_ObjectHideFlags: 1
