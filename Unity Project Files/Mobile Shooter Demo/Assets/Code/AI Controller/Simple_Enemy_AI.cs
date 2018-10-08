@@ -1,83 +1,135 @@
-﻿//*! Using namespace(s)
-using UnityEngine;
-using System.Collections;
+﻿//*!----------------------------!*//
+//*! Programmer: Alex Scicluna
+//*!----------------------------!*//
+
+//*! Using namespaces
+using UnityEngine; 
 
 /// <summary>
-/// Simple Vector3.MoveTowards the target postion logic.
+/// Simple Enemy AI Logic Controller
 /// </summary>
 public class Simple_Enemy_AI : MonoBehaviour
 {
 
-    //*! Initialised with no target
-    private GameObject target = null;
+    //*!----------------------------!*//
+    //*!    Public Variables
+    //*!----------------------------!*//
+    #region Public Variables
 
-    //*! Default min_distance = 1
-    [Range(1, 10)]
-    [SerializeField]
-    private int min_distance = 1;
-
-
-    //*! Default movement speed = 1
-    [Range(1, 10)]
+    [Range(1, 5)]
     public float movement_speed = 1;
 
-    public GameObject Bullet_Prefab = null;
+
+    [Range(1, 5)]
+    public float min_distance_threshold = 1;
+
+    [HideInInspector]
+    public bool can_seek = false;
+
+    #endregion
+
+    //*!----------------------------!*//
+    //*!    Private Variables
+    //*!----------------------------!*//
+    #region Private Variables
+
+    private GameObject target = null;
+
+    private Game_Manager game_manager = null;
+
+    private float shoot_timer = 0.0f;
+
+    #endregion
 
 
-    private float timer = 0.0f;
+    //*!----------------------------!*//
+    //*!    Unity Functions
+    //*!----------------------------!*//
+    #region Unity Functions
 
     private void Start()
     {
-        //*! Set the target to be of the player via the Enemy_Manager
-        target = GameObject.FindObjectOfType<Enemy_Manager>().target_player;
+        //*! Game Manager Reference
+        game_manager = FindObjectOfType<Game_Manager>();
 
-
+        //*! Add in the player as the first target
+        target = game_manager.Player;
     }
-
-
-
+    
     private void Update()
     {
-        if (target != null)
+        //*! Main lock for 'in active' enemies 
+        if (can_seek == true)
         {
-            Simple_Move();
+            Move_Toward_Target();
 
-
-            timer += Time.deltaTime;
-            if (timer >= 5.0f)
+            //*! Every X Seconds shoot at the player
+            shoot_timer += Time.deltaTime;
+            if (shoot_timer >= Random.Range(2.0f, 3.5f))
             {
-                Simple_Shoot();
-                timer = 0.0f;
+                //*! Reset the shoot timer
+                shoot_timer = 0.0f;
+                //*! And shoot the target
+                Shoot();
             }
-
         }
-
     }
+
+    #endregion
+
+
+    //*!----------------------------!*//
+    //*!    Custom Functions
+    //*!----------------------------!*//
+
+    //*! Public Access
+    #region Public Functions
+        
+    ///*! Handy debug option menu
+    ///[ContextMenu("Shoot Player")]
+    /// <summary>
+    /// Shoots at the current targets position from the enemies current position
+    /// </summary>
+    public void Shoot()
+    {
+        //*! Create a new bullet using the game managers prefab
+        GameObject bullet = Instantiate(game_manager.Bullet_Prefab,
+                               new Vector3(transform.position.x,
+                                           transform.position.y,
+                                           transform.position.z),
+                               Quaternion.identity);
+
+        //*! Set the target position of the bullet
+        bullet.GetComponent<Bullet_Hit>().Target_Position = target.transform.position;
+
+        //*! Who fired the bullet - no friendly fire;
+        bullet.GetComponent<Bullet_Hit>().whom_fired_it = "Enemy";
+
+        //*! Auto destroy in 2.5 seconds
+        Destroy(bullet, 2.5f);
+    }
+
+    #endregion
+       
+    //*! Private Access
+    #region Private Functions
 
     /// <summary>
-    /// Only call if the target is not null
+    /// Get the distance to target and move towards it.
     /// </summary>
-    private void Simple_Move()
+    private void Move_Toward_Target()
     {
-        //*! Move towards the target if they are more than the min_distance away
-        if ((this.transform.position - target.transform.position).magnitude > min_distance)
+        //*! Calculate the distance to target
+        float min_distance_to_target = (target.transform.position - transform.position).magnitude;
+
+        //*! Above the minimun distance to seek
+        if (min_distance_to_target > min_distance_threshold)
         {
-            this.transform.position = Vector3.MoveTowards(this.transform.position, target.transform.position, movement_speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, movement_speed * Time.deltaTime);
         }
     }
 
+    #endregion
 
-    private void Simple_Shoot()
-    {
-        Vector3 vec_between = target.transform.position - this.transform.position;
-
-        GameObject temp_bullet = GameObject.Instantiate(Bullet_Prefab, new Vector3(this.transform.position.x, this.transform.position.y + 2, this.transform.position.z), Quaternion.identity);
-
-        temp_bullet.GetComponent<Bullet_Hit>().Target_Position = target.transform.position;
-
-
-    }
-
-
-
+          
 }
