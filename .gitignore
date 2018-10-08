@@ -3,7 +3,7 @@
 
 ### Android ###
 # Built application files
-*.apk
+!*.apk
 *.ap_
 
 # Files for the ART/Dalvik VM
@@ -135,7 +135,7 @@ StyleCopReport.xml
 *_p.c
 *_h.h
 *.ilk
-*.meta
+!*.meta
 *.obj
 *.iobj
 *.pch
