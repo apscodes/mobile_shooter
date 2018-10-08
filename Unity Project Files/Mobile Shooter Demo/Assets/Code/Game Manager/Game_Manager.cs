@@ -21,9 +21,11 @@ public class Game_Manager : MonoBehaviour
 
     public GameObject Player = null;
 
-    public GameObject Door;
+    public GameObject Door = null;
 
-    public GameObject Bullet_Prefab;
+    public GameObject Door_End = null;
+
+    public GameObject Bullet_Prefab = null;
 
     public GameObject Enemy_Container = null;
 
@@ -94,18 +96,21 @@ public class Game_Manager : MonoBehaviour
                 enemy.Remove(e);
 
                 //*! Check the count of enemy's
-                if (enemy.Count <= 5 && Door.activeSelf == true)
+                if (enemy.Count == 5)
                 {
-                    //*! Disable the renderering of the door
-                    Door.SetActive(false);
+                    //*! Move the door out of the way.
+                    Door.GetComponent<Simple_Door_Move>().Target_Position = new Vector3(Door.transform.position.x, Door.transform.position.y - 4, Door.transform.position.z);
 
                     //*! Set the can seek to true for the remaining 5 enemies
                     Enable_Second_Wave();
                 }
                 else if (enemy.Count == 0)
                 {
-                    End_Of_Demo();
+                    //*! Move the door out of the way.
+                    Door_End.GetComponent<Simple_Door_Move>().Target_Position = new Vector3(Door_End.transform.position.x, Door_End.transform.position.y - 4, Door_End.transform.position.z);
                 }
+
+                  
 
                 //*! Something removed.
                 return true;
@@ -116,22 +121,23 @@ public class Game_Manager : MonoBehaviour
         return false;
     }
 
+    public void End_Game_Call()
+    {
+        //*! Set the text value
+        end_of_demo.text = "End of game demo, thanks for playing.\n@apscodes";
+
+        //*! Call in 10 seconds
+        Invoke("End_Game", 10.0f);
+    }
+
+
 
     #endregion
 
     //*! Private Access
     #region Private Functions
 
-    private void End_Of_Demo()
-    {
-        //*! Set the text value
-        end_of_demo.text = "End of game demo, thanks for playing.\n@apscodes";
-        
-        //*! Call in 10 seconds
-        Invoke("End_Game", 10.0f);
-    }
-
-    //*! Closes the game in editor and build
+     //*! Closes the game in editor and build
     private void End_Game()
     {
         #if UNITY_EDITOR
@@ -140,7 +146,6 @@ public class Game_Manager : MonoBehaviour
                 Application.Quit();
         #endif
     }
-
 
     /// <summary>
     /// Only call when the second wave is ready.
@@ -152,8 +157,6 @@ public class Game_Manager : MonoBehaviour
         {
             //*! Allow the enemies to seek to the player.
             e.can_seek = true;
-
-            e.gameObject.transform.position += new Vector3(0, 2, 0);
         }
     }
 

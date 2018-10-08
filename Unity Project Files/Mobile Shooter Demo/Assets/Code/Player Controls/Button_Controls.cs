@@ -72,7 +72,7 @@ public class Button_Controls : MonoBehaviour
         room_two.bounds_max.x = 5;
 
         room_two.bounds_min.y = -8;
-        room_two.bounds_max.y = 14;
+        room_two.bounds_max.y = 15;
 
         #endregion
 
